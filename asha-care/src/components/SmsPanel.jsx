@@ -117,6 +117,41 @@ export default function SmsPanel({ preselectedPatientId, preselectedTemplate, cl
   };
 
   // Real SMS dispatcher function
+  const makeDirectFast2SmsCall = async (payload) => {
+    const fast2SmsKey = 'MYPmNuvQ7hsw9324dSBeyUGrapDCKEi08obxjJ5VFqZfgAzc1RIYzXd0aM4UeLJDV2ET5ntuFcosWvgx';
+    try {
+      const fRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+        method: 'POST',
+        headers: {
+          'authorization': fast2SmsKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          route: 'q',
+          message: payload.message,
+          language: 'english',
+          numbers: payload.number
+        })
+      });
+
+      const fData = await fRes.json();
+      addDebugLog(`Direct Fast2SMS Response: ${JSON.stringify(fData)}`);
+
+      if (fRes.ok && fData.return === true) {
+        return { success: true, data: fData };
+      } else {
+        let reason = fData.message || (fData.errors_keys && fData.errors_keys.join(', ')) || 'Direct dispatch failed';
+        if (reason.toLowerCase().includes('spam')) {
+          reason = 'Spam Filter Triggered - Fast2SMS blocks multiple messages sent to the same mobile number within a short timeframe (1-5 mins) to prevent flooding. Please wait a few minutes before retrying.';
+        }
+        return { success: false, reason };
+      }
+    } catch (err) {
+      addDebugLog(`Direct Connection Error: ${err.message}`);
+      return { success: false, reason: 'Failed to connect directly to Fast2SMS server' };
+    }
+  };
+
   const dispatchSMS = async (payload) => {
     addDebugLog(`API Request: POST /api/send-sms`);
     addDebugLog(`Request Body: ${JSON.stringify(payload)}`);
@@ -129,68 +164,52 @@ export default function SmsPanel({ preselectedPatientId, preselectedTemplate, cl
       });
 
       const statusCode = response.status;
-      addDebugLog(`HTTP Status Code: ${statusCode}`);
+      const contentType = response.headers.get('content-type') || '';
+      addDebugLog(`HTTP Status Code: ${statusCode} | Content-Type: ${contentType}`);
 
-      if (statusCode === 404) {
-        addDebugLog(`Proxy server offline/unavailable. Attempting direct Fast2SMS API call...`);
-        const fast2SmsKey = 'MYPmNuvQ7hsw9324dSBeyUGrapDCKEi08obxjJ5VFqZfgAzc1RIYzXd0aM4UeLJDV2ET5ntuFcosWvgx';
-        const fRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
-          method: 'POST',
-          headers: {
-            'authorization': fast2SmsKey,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            route: 'q',
-            message: payload.message,
-            language: 'english',
-            numbers: payload.number
-          })
-        });
+      // Handle Netlify HTML 404 redirects
+      if (statusCode === 404 || contentType.includes('text/html')) {
+        addDebugLog(`Proxy server unreachable or returned HTML redirect page. Redirecting to direct Fast2SMS API...`);
+        return await makeDirectFast2SmsCall(payload);
+      }
 
-        const fData = await fRes.json();
-        addDebugLog(`Direct Fast2SMS Response: ${JSON.stringify(fData)}`);
+      try {
+        const data = await response.json();
+        addDebugLog(`API Response: ${JSON.stringify(data)}`);
 
-        if (fRes.ok && fData.return === true) {
-          return { success: true, data: fData };
+        if (response.ok && data.return === true) {
+          return { success: true, data };
         } else {
-          const reason = fData.message || (fData.errors_keys && fData.errors_keys.join(', ')) || 'Fast2SMS direct dispatch failed';
+          // Map exact failure reasons returned by Fast2SMS or middleware
+          let reason = data.message || (data.errors_keys && data.errors_keys.join(', ')) || 'Unknown API Error';
+          if (statusCode === 401 || reason.toLowerCase().includes('api key') || reason.toLowerCase().includes('unauthorized')) {
+            reason = 'Invalid API Key / Unauthorized';
+          } else if (reason.toLowerCase().includes('100 inr') || reason.toLowerCase().includes('transaction of 100')) {
+            reason = '100 INR Transaction Required - You need to complete one transaction of 100 INR or more in your Fast2SMS account before utilizing the Developer API.';
+          } else if (reason.toLowerCase().includes('spam')) {
+            reason = 'Spam Filter Triggered - Fast2SMS blocks multiple messages sent to the same mobile number within a short timeframe (1-5 mins) to prevent flooding. Please wait a few minutes before retrying.';
+          } else if (reason.toLowerCase().includes('balance') || reason.toLowerCase().includes('credit')) {
+            reason = 'Insufficient Balance';
+          } else if (reason.toLowerCase().includes('route')) {
+            reason = 'Invalid Route';
+          } else if (reason.toLowerCase().includes('number') || reason.toLowerCase().includes('phone')) {
+            reason = 'Invalid Mobile Number';
+          } else if (reason.toLowerCase().includes('quota') || reason.toLowerCase().includes('limit')) {
+            reason = 'Quota Exceeded';
+          } else if (statusCode === 408) {
+            reason = 'Network Timeout';
+          } else if (statusCode === 400) {
+            reason = 'Bad Request';
+          }
           return { success: false, reason };
         }
-      }
-
-      const data = await response.json();
-      addDebugLog(`API Response: ${JSON.stringify(data)}`);
-
-      if (response.ok && data.return === true) {
-        return { success: true, data };
-      } else {
-        // Map exact failure reasons returned by Fast2SMS or middleware
-        let reason = data.message || (data.errors_keys && data.errors_keys.join(', ')) || 'Unknown API Error';
-        if (statusCode === 401 || reason.toLowerCase().includes('api key') || reason.toLowerCase().includes('unauthorized')) {
-          reason = 'Invalid API Key / Unauthorized';
-        } else if (reason.toLowerCase().includes('100 inr') || reason.toLowerCase().includes('transaction of 100')) {
-          reason = '100 INR Transaction Required - You need to complete one transaction of 100 INR or more in your Fast2SMS account before utilizing the Developer API.';
-        } else if (reason.toLowerCase().includes('spam')) {
-          reason = 'Spam Filter Triggered - Fast2SMS blocks multiple messages sent to the same mobile number within a short timeframe (1-5 mins) to prevent flooding. Please wait a few minutes before retrying.';
-        } else if (reason.toLowerCase().includes('balance') || reason.toLowerCase().includes('credit')) {
-          reason = 'Insufficient Balance';
-        } else if (reason.toLowerCase().includes('route')) {
-          reason = 'Invalid Route';
-        } else if (reason.toLowerCase().includes('number') || reason.toLowerCase().includes('phone')) {
-          reason = 'Invalid Mobile Number';
-        } else if (reason.toLowerCase().includes('quota') || reason.toLowerCase().includes('limit')) {
-          reason = 'Quota Exceeded';
-        } else if (statusCode === 408) {
-          reason = 'Network Timeout';
-        } else if (statusCode === 400) {
-          reason = 'Bad Request';
-        }
-        return { success: false, reason };
+      } catch (parseError) {
+        addDebugLog(`JSON Parse failed. Triggering direct Fast2SMS API fallback...`);
+        return await makeDirectFast2SmsCall(payload);
       }
     } catch (err) {
-      addDebugLog(`Network Error: ${err.message}`);
-      return { success: false, reason: 'Network Timeout / Unreachable Server' };
+      addDebugLog(`Network Error: ${err.message}. Triggering direct fallback...`);
+      return await makeDirectFast2SmsCall(payload);
     }
   };
 
