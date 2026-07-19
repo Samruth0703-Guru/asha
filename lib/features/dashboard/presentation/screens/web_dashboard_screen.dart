@@ -112,38 +112,49 @@ class _WebDashboardScreenState extends ConsumerState<WebDashboardScreen> {
     ];
 
     return Container(
-      width: 250,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(right: BorderSide(color: Colors.grey.shade200, width: 1.5)),
-      ),
+      width: 260,
+      color: const Color(0xFF1E293B),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Logo Section
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
-                  child: const Icon(Icons.medical_services_rounded, color: AppTheme.primaryColor, size: 16),
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF10B981),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.health_and_safety_rounded, color: Colors.white, size: 22),
                 ),
-                const SizedBox(width: 10),
-                Text(
-                  'ASHA CARE+',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 16, color: AppTheme.primaryColor),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ASHA CARE+',
+                      style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 15, color: Colors.white, letterSpacing: 0.5),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Block Console',
+                      style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w600, color: const Color(0xFF94A3B8)),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          const Divider(height: 1),
+          const Divider(height: 1, color: Color(0xFF334155)),
 
           // Sidebar Navigation List
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               itemCount: menuItems.length,
               itemBuilder: (context, index) {
                 final item = menuItems[index];
@@ -151,13 +162,13 @@ class _WebDashboardScreenState extends ConsumerState<WebDashboardScreen> {
                 final isActive = _activeRoute == title;
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.only(bottom: 4),
                   child: ListTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    tileColor: isActive ? AppTheme.primaryColor.withOpacity(0.08) : Colors.transparent,
+                    tileColor: isActive ? const Color(0xFFE6F4EA) : Colors.transparent,
                     leading: Icon(
                       item['icon'] as IconData,
-                      color: isActive ? AppTheme.primaryColor : Colors.grey,
+                      color: isActive ? const Color(0xFF137333) : const Color(0xFF94A3B8),
                       size: 20,
                     ),
                     title: Text(
@@ -165,7 +176,7 @@ class _WebDashboardScreenState extends ConsumerState<WebDashboardScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 13,
                         fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                        color: isActive ? AppTheme.primaryColor : const Color(0xff0f172a),
+                        color: isActive ? const Color(0xFF137333) : const Color(0xFF94A3B8),
                       ),
                     ),
                     onTap: () {
@@ -195,14 +206,48 @@ class _WebDashboardScreenState extends ConsumerState<WebDashboardScreen> {
             ),
           ),
 
-          // Logout Action
-          const Divider(height: 1),
+          // Campaign Banner Card at bottom
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0F172A),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF065F46).withOpacity(0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'CAMPAIGN INFO',
+                    style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w900, color: const Color(0xFF34D399), letterSpacing: 0.5),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Make Every Mother Count, Every Life Matters.',
+                    style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.white),
+                  ),
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Image.network(
+                      'https://lh3.googleusercontent.com/aida-public/AB6AXuDqebMuKHIgqbWUAjgcnnREurIc6bWG6C3ja9tL197KVXSIETRj8_PL6Xg4LjI3Ys54eQBvSpUmTt76DGIvxD4Eb2GGmNFqCH_qi6mV2sn75KONjNOMzfV_4Zm3jRYTmaSh_9ZYokch8rhW5R2GkTym_mtpjOdKRFcTsA4ZX2kOnXiDegWtPQsGL9xE_dgScLwzrMo7mgzHf5_JWpUbkRNzvk-46esrVBXyzynL3s1B48PcCTwuT3ZYBQ',
+                      height: 48,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const Divider(height: 1, color: Color(0xFF334155)),
           ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            leading: const Icon(Icons.logout_rounded, color: AppTheme.dangerColor),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            leading: const Icon(Icons.logout_rounded, color: Color(0xFF94A3B8)),
             title: Text(
               'Logout',
-              style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.dangerColor),
+              style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8)),
             ),
             onTap: () => context.go('/login'),
           ),
@@ -213,68 +258,82 @@ class _WebDashboardScreenState extends ConsumerState<WebDashboardScreen> {
 
   Widget _buildHeader(BuildContext context) {
     return Container(
-      height: 75,
+      height: 70,
       padding: const EdgeInsets.symmetric(horizontal: 32),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1.5)),
+        border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Search box
-          Expanded(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 400),
-              decoration: BoxDecoration(
-                color: AppTheme.backgroundColor,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search patients, villages...',
-                  hintStyle: GoogleFonts.inter(fontSize: 13, color: Colors.grey),
-                  prefixIcon: const Icon(Icons.search_rounded, color: Colors.grey, size: 20),
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-            ),
-          ),
-
-          // Profile area
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_none_rounded, color: Colors.grey),
-                onPressed: () => context.push('/notifications'),
-              ),
+              const Icon(Icons.menu_rounded, color: Color(0xFF94A3B8)),
               const SizedBox(width: 16),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                width: 350,
+                height: 38,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade200),
-                  borderRadius: BorderRadius.circular(16),
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 16,
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150'),
-                    ),
-                    const SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Dr. Rajesh', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold)),
-                        Text('MO - PHC', style: GoogleFonts.inter(fontSize: 9.5, color: Colors.grey, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ],
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search patients, villages, health records...',
+                    hintStyle: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+                    prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF94A3B8), size: 18),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
                 ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Stack(
+                children: [
+                  const Icon(Icons.notifications_none_rounded, color: Color(0xFF64748B)),
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 20),
+              const Icon(Icons.wb_sunny_outlined, color: Color(0xFF64748B)),
+              const SizedBox(width: 20),
+              Container(
+                height: 24,
+                width: 1,
+                color: const Color(0xFFE2E8F0),
+              ),
+              const SizedBox(width: 20),
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Dr. Rajesh', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1E293B))),
+                      const SizedBox(height: 2),
+                      Text('MO - PHC', style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFF94A3B8), fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+                  const CircleAvatar(
+                    radius: 18,
+                    backgroundImage: NetworkImage('https://lh3.googleusercontent.com/aida-public/AB6AXuDQQKDnoIW6yrZEUBwkiF_j7aWfb05QJiFhZg_kBkZosEJSEEVut6o3ELTRpUWUlJFufA7LVupVrKEtUtHaVHwMsCVnMdEN2r-YyzRJ0jWo6j2Cg6bOu2gHUi858MMmoTOBSFpc8RPMVlEwhH4_94IemhNSeUA4sW0X9S9bF7vh-rW9gkIg0HqrXnB2pnLRqdjCBAApY8QFyQr21tXqxMQu5gyFt_F9AvWje-nVoYhUCxFNPobRJFJLkg'),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF64748B), size: 18),
+                ],
               ),
             ],
           ),
@@ -286,65 +345,114 @@ class _WebDashboardScreenState extends ConsumerState<WebDashboardScreen> {
   Widget _buildWelcomeHeader() {
     return Container(
       width: double.infinity,
-      height: 240,
+      height: 260,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        image: const DecorationImage(
-          image: NetworkImage('hospital_banner.png'),
-          fit: BoxFit.cover,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.5),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.7), Colors.transparent],
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
+      child: Stack(
+        children: [
+          // Background consulting image
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 450,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(topRight: Radius.circular(24), bottomRight: Radius.circular(24)),
+              child: Image.network(
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBKagPQrRN5-FeXXpGNEfQT-I4XUN2v3HVzM_mR4mWnZOMZBnPDaGAdHWpBSsEf4QzANUt_HBIbcxisANbok6YRvVL0OvXYsa4dzNixGILml6ELAXGT6Bnk4cf9kmRzQUaS8jMFUnn2qmBEV3CwZVcoGZwYKhnwPiHpF53oN87h-pzdn3mBexeNiBOupBVcl7tn0PJO_UQxVBXBHOvDq0c0XUdq09M0H7Dxpr-YHG_9-2h523_tWA6MkA',
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-        padding: const EdgeInsets.all(32),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
+          // Gradient fade
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(
+                  colors: [Colors.white, Colors.white.withOpacity(0.9), Colors.transparent],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  stops: const [0.55, 0.65, 1.0],
+                ),
+              ),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Text('Welcome back, Doctor! ', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF047857))),
+                    const Text('👋', style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Welcome to ASHA Care Block Console',
+                  style: GoogleFonts.inter(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xFF1E293B),
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'District PHC administrative center. Track community health, vaccine metrics, and clinic stock.',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: const Color(0xFF64748B),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () => context.push('/register-patient'),
+                  icon: const Icon(Icons.person_add_rounded, size: 15),
+                  label: const Text('Register New Patient'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF003D29),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(180, 46),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Date Overlay Badge
+          Positioned(
+            top: 24,
+            right: 24,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.95),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                border: Border.all(color: const Color(0xFFF1F5F9), width: 1.5),
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'Welcome to ASHA Care Block Console',
-                    style: GoogleFonts.outfit(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'District PHC administrative center. Track community health, vaccine metrics, and clinic stock.',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
+                  Text('Today\'s Date', style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8))),
+                  const SizedBox(height: 4),
+                  Text('18 Jul 2025', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w900, color: const Color(0xFF003D29))),
+                  const SizedBox(height: 2),
+                  Text('Friday', style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: const Color(0xFF64748B))),
                 ],
               ),
             ),
-            ElevatedButton.icon(
-              onPressed: () => context.push('/register-patient'),
-              icon: const Icon(Icons.person_add_rounded, size: 16),
-              label: const Text('Register Patient'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
-                minimumSize: const Size(180, 52),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -356,97 +464,77 @@ class _WebDashboardScreenState extends ConsumerState<WebDashboardScreen> {
           spacing: 20,
           runSpacing: 20,
           children: [
-            _buildStatCard('Total Patients', '${stats.totalPatients}', 'Registered patients', Icons.people_rounded, AppTheme.primaryColor, 'card_patients.png'),
-            _buildStatCard('Pregnant Mothers', '${stats.pregnantMothers}', 'Maternal care cases', Icons.child_care_rounded, AppTheme.secondaryColor, 'card_maternal.png'),
-            _buildStatCard('High Risk Cases', '${stats.highRiskCases}', 'Requires clinic check', Icons.error_outline_rounded, AppTheme.dangerColor, 'card_highrisk.png'),
-            _buildStatCard('Vaccinations Done', '${stats.vaccinationsDone}', 'Completed immunizations', Icons.vaccines_rounded, AppTheme.warningColor, 'card_vaccination.png'),
+            _buildStatCard('Total Patients', '${stats.totalPatients}', '1,204', '12% from last month', Icons.people_rounded, const Color(0xFF2563EB), const Color(0xFFEFF6FF)),
+            _buildStatCard('Pregnant Mothers', '${stats.pregnantMothers}', '342', '8% from last month', Icons.pregnant_woman_rounded, const Color(0xFF059669), const Color(0xFFECFDF5)),
+            _buildStatCard('Requires Clinic Check', '${stats.highRiskCases}', '28', '5% from last month', Icons.warning_rounded, const Color(0xFFDC2626), const Color(0xFFFEF2F2)),
+            _buildStatCard('Completed Immunizations', '${stats.vaccinationsDone}', '956', '15% from last month', Icons.vaccines_rounded, const Color(0xFFD97706), const Color(0xFFFEF3C7)),
           ],
         );
       },
     );
   }
 
-  Widget _buildStatCard(String label, String value, String trend, IconData icon, Color color, String bgImage) {
+  Widget _buildStatCard(String label, String count, String value, String trend, IconData icon, Color color, Color bgIconColor) {
     return Container(
       width: 250,
-      height: 160,
-      clipBehavior: Clip.antiAlias,
+      height: 150,
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200, width: 1.5),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.5),
       ),
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Background photo with reduced opacity
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.35,
-              child: Image.network(
-                bgImage,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(color: Colors.white),
-              ),
-            ),
-          ),
-          // White overlay to soften the image further
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.white.withOpacity(0.65),
-                    Colors.white.withOpacity(0.35),
-                  ],
-                  begin: Alignment.bottomLeft,
-                  end: Alignment.topRight,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: bgIconColor,
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: Icon(icon, color: color, size: 20),
               ),
-            ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(label.toUpperCase(), style: GoogleFonts.inter(fontSize: 8, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8))),
+                  const SizedBox(height: 2),
+                  Text(value, style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w900, color: const Color(0xFF1E293B))),
+                ],
+              ),
+            ],
           ),
-          // Card content
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.only(top: 10),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: Color(0xFFF8FAFC), width: 1.5)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(icon, color: color, size: 20),
-                    ),
+                    Icon(Icons.trending_up_rounded, color: color, size: 12),
+                    const SizedBox(width: 2),
                     Text(
                       trend,
                       style: GoogleFonts.inter(
-                        fontSize: 11,
+                        fontSize: 9,
                         fontWeight: FontWeight.bold,
                         color: color,
                       ),
                     ),
                   ],
                 ),
-                const Spacer(),
-                Text(
-                  value,
-                  style: GoogleFonts.outfit(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xff0f172a),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xff475569),
-                  ),
+                CustomPaint(
+                  size: const Size(60, 16),
+                  painter: SparklinePainter(const [10.0, 15.0, 8.0, 20.0, 15.0, 25.0], color),
                 ),
               ],
             ),

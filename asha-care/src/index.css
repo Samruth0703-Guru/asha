@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #bfc9c4;
+    border-radius: 4px;
+  }
+  .sparkline-path {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: dash 2s ease-in-out forwards;
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: 0; }
+  }
+  .stat-card-shadow {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.04);
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #f7f9fb;
+  color: #191c1e;
+}
