@@ -131,6 +131,34 @@ export default function SmsPanel({ preselectedPatientId, preselectedTemplate, cl
       const statusCode = response.status;
       addDebugLog(`HTTP Status Code: ${statusCode}`);
 
+      if (statusCode === 404) {
+        addDebugLog(`Proxy server offline/unavailable. Attempting direct Fast2SMS API call...`);
+        const fast2SmsKey = 'MYPmNuvQ7hsw9324dSBeyUGrapDCKEi08obxjJ5VFqZfgAzc1RIYzXd0aM4UeLJDV2ET5ntuFcosWvgx';
+        const fRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+          method: 'POST',
+          headers: {
+            'authorization': fast2SmsKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            route: 'q',
+            message: payload.message,
+            language: 'english',
+            numbers: payload.number
+          })
+        });
+
+        const fData = await fRes.json();
+        addDebugLog(`Direct Fast2SMS Response: ${JSON.stringify(fData)}`);
+
+        if (fRes.ok && fData.return === true) {
+          return { success: true, data: fData };
+        } else {
+          const reason = fData.message || (fData.errors_keys && fData.errors_keys.join(', ')) || 'Fast2SMS direct dispatch failed';
+          return { success: false, reason };
+        }
+      }
+
       const data = await response.json();
       addDebugLog(`API Response: ${JSON.stringify(data)}`);
 
