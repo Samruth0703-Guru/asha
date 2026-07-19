@@ -172,8 +172,9 @@ export const triggerSync = async () => {
         console.log(`[Sync Engine] Successfully synced Family ${familyId}`);
 
       } else if (item.type === 'sendSMS') {
-        // Playback SMS dispatcher via existing SmsPanel code or backend proxy
-        const res = await fetch('/api/send-sms', {
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const endpoint = isLocal ? '/api/send-sms' : '/.netlify/functions/send-sms';
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(item.payload)

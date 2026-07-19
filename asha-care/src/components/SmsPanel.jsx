@@ -118,8 +118,8 @@ export default function SmsPanel({ preselectedPatientId, preselectedTemplate, cl
 
   // Real SMS dispatcher function
   const dispatchSMS = async (payload) => {
-    const isNetlify = window.location.hostname.includes('netlify.app');
-    const endpoint = isNetlify ? '/.netlify/functions/send-sms' : '/api/send-sms';
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const endpoint = isLocal ? '/api/send-sms' : '/.netlify/functions/send-sms';
     
     addDebugLog(`API Request: POST ${endpoint}`);
     addDebugLog(`Request Body: ${JSON.stringify(payload)}`);
